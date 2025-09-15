@@ -202,7 +202,6 @@ export const VideoFeed = ({ addLog, onRecordingReady, isRunning }) => {
 
     const startCamera = async () => {
       try {
-        // Start camera stream
         streamRef.current = await navigator.mediaDevices.getUserMedia({
           video: { width: 640, height: 480 },
           audio: true,
@@ -210,10 +209,9 @@ export const VideoFeed = ({ addLog, onRecordingReady, isRunning }) => {
 
         if (videoRef.current) {
           videoRef.current.srcObject = streamRef.current;
-          await videoRef.current.play(); // <-- important
+          await videoRef.current.play();
         }
 
-        // Recording setup
         mediaRecorderRef.current = new MediaRecorder(streamRef.current);
         chunksRef.current = [];
         mediaRecorderRef.current.ondataavailable = (e) => {
@@ -223,7 +221,6 @@ export const VideoFeed = ({ addLog, onRecordingReady, isRunning }) => {
           onRecordingReady(chunksRef.current);
         mediaRecorderRef.current.start();
 
-        // Detection loop
         const runLoop = async () => {
           if (!videoRef.current || !detectorRef.current) {
             requestAnimationFrame(runLoop);
@@ -247,7 +244,7 @@ export const VideoFeed = ({ addLog, onRecordingReady, isRunning }) => {
           );
           ctx.restore();
 
-          // Draw detections only when found
+          // Draw detections
           predictions.forEach((p) => {
             if (
               ["cell phone", "book", "laptop", "tablet", "paper"].includes(p.class)
@@ -281,7 +278,10 @@ export const VideoFeed = ({ addLog, onRecordingReady, isRunning }) => {
     };
 
     const stopAll = () => {
-      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      if (
+        mediaRecorderRef.current &&
+        mediaRecorderRef.current.state !== "inactive"
+      ) {
         mediaRecorderRef.current.stop();
       }
       if (streamRef.current) {
@@ -295,21 +295,25 @@ export const VideoFeed = ({ addLog, onRecordingReady, isRunning }) => {
   }, [isRunning, addLog, onRecordingReady]);
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full flex items-center justify-center bg-black">
       {loading && (
-        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black text-white">
+        <div className="absolute inset-0 flex items-center justify-center bg-black text-white text-base sm:text-lg">
           Loading object detector...
         </div>
       )}
-      {/* Raw video (hidden, unmirrored) */}
+
+      {/* Raw video (hidden) */}
       <video ref={videoRef} autoPlay playsInline muted className="hidden" />
-      {/* Canvas (mirrored preview + detections) */}
-      <canvas
-        ref={canvasRef}
-        width={640}
-        height={480}
-        className="w-full h-full object-contain bg-black"
-      />
+
+      {/* Responsive Canvas */}
+      <div className="w-full max-w-5xl aspect-video">
+        <canvas
+          ref={canvasRef}
+          width={640}
+          height={480}
+          className="w-full h-full rounded-lg shadow-lg object-contain"
+        />
+      </div>
     </div>
   );
 };
