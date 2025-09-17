@@ -12,7 +12,7 @@ export const Home = () => {
           Ensure integrity during interviews with live monitoring, face
           detection, and suspicious activity tracking.
         </p>
-        <Link to="/interview">
+        <Link to="/login">
           <button className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition">
             🚀 Start Interview
           </button>

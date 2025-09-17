@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { VideoFeed } from "../components/VideoFeed";
 import { LogsPanel } from "../components/LogsPanel";
+import { useNavigate } from "react-router-dom";
 
 export const Interview = () => {
   const [logs, setLogs] = useState([]);
   const [isRunning, setIsRunning] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [showSave, setShowSave] = useState(false);
+  const [isSaved, setIsSaved] = useState(false); // track save status
+
+  const navigate = useNavigate(); // For navigation to report page
 
   const addLog = (type) => {
     setLogs((prev) => [...prev, { type, timestamp: new Date().toISOString() }]);
@@ -15,6 +19,7 @@ export const Interview = () => {
   const handleStart = () => {
     setIsRunning(true);
     setShowSave(false);
+    setIsSaved(false);
   };
 
   const handleStop = () => {
@@ -22,20 +27,30 @@ export const Interview = () => {
     setShowSave(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (recordedChunks.length === 0) return;
 
     const blob = new Blob(recordedChunks, { type: "video/webm" });
-    const url = URL.createObjectURL(blob);
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `candidate-recording-${Date.now()}.webm`;
-    a.click();
+    // send to backend (MongoDB)
+    const formData = new FormData();
+    formData.append("file", blob, `candidate-recording-${Date.now()}.webm`);
 
-    URL.revokeObjectURL(url);
-    setRecordedChunks([]);
-    setShowSave(false);
+    try {
+      await fetch("http://localhost:5000/api/recordings", {
+        method: "POST",
+        body: formData,
+      });
+
+      setIsSaved(true); // mark as saved
+      setRecordedChunks([]);
+    } catch (err) {
+      console.error("Error saving recording:", err);
+    }
+  };
+
+  const goToReport = () => {
+    navigate("/report", { state: { latest: true } }); // tell report page to fetch latest recording
   };
 
   return (
@@ -47,7 +62,7 @@ export const Interview = () => {
             <>
               <VideoFeed
                 addLog={addLog}
-                onRecordingReady={setRecordedChunks}
+                onRecordingReady={setRecordedChunks} // only collect chunks, no auto save
                 isRunning={isRunning}
               />
               {/* Recording Badge */}
@@ -77,7 +92,7 @@ export const Interview = () => {
             ▶ Start
           </button>
 
-          {/* Stop / Save Button */}
+          {/* Stop / Save / Report Buttons */}
           {!showSave ? (
             <button
               onClick={handleStop}
@@ -91,12 +106,26 @@ export const Interview = () => {
               ⏹ Stop
             </button>
           ) : (
-            <button
-              onClick={handleSave}
-              className="px-4 sm:px-6 py-2 rounded-lg font-semibold shadow-md transition bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base"
-            >
-              💾 Save Recording
-            </button>
+            <>
+              <button
+                onClick={handleSave}
+                disabled={isSaved}
+                className={`px-4 sm:px-6 py-2 rounded-lg font-semibold shadow-md transition text-sm sm:text-base ${
+                  isSaved
+                    ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                }`}
+              >
+                {isSaved ? "✅ Saved" : "💾 Save Recording"}
+              </button>
+
+              <button
+                onClick={goToReport}
+                className="px-4 sm:px-6 py-2 rounded-lg font-semibold shadow-md transition bg-indigo-600 hover:bg-indigo-700 text-white text-sm sm:text-base"
+              >
+                📄 Go to Report
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -110,3 +139,5 @@ export const Interview = () => {
     </div>
   );
 };
+
+export default Interview;

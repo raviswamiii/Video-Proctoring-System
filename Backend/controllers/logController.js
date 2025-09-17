@@ -1,4 +1,4 @@
-import logModel from "../models/log.js";
+import logModel from "../models/report.js";
 
 export const saveLogs = async (req, res) => {
   try {

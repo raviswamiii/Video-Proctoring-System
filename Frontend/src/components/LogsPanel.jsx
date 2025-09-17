@@ -13,40 +13,41 @@ export const LogsPanel = ({ logs }) => {
       <div className="flex-1 overflow-y-auto p-4">
         <ul className="space-y-3 text-sm">
           {logs && logs.length > 0 ? (
-            logs.map((log, i) => (
-              <li
-                key={i}
-                className="p-3 bg-gray-50 rounded-lg border border-gray-200 shadow-sm flex items-start gap-3"
-              >
-                {/* Timestamp */}
-                <span className="text-xs text-gray-500 whitespace-nowrap">
-                  {new Date(log.timestamp).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  })}
-                </span>
-
-                {/* Log Message */}
-                <span
-                  className={`flex-1 font-medium ${
-                    log.type.includes("No Face")
-                      ? "text-red-600"
-                      : log.type.includes("Multiple")
-                      ? "text-yellow-600"
-                      : log.type.includes("Suspicious")
-                      ? "text-orange-600"
-                      : "text-green-600"
-                  }`}
+            [...logs] // make a copy so we don’t mutate state
+              .slice() // ensure immutability
+              .reverse() // reverse order to show latest first
+              .map((log, i) => (
+                <li
+                  key={i}
+                  className="p-3 bg-gray-50 rounded-lg border border-gray-200 shadow-sm flex items-start gap-3"
                 >
-                  {log.type}
-                </span>
-              </li>
-            ))
+                  {/* Timestamp */}
+                  <span className="text-xs text-gray-500 whitespace-nowrap">
+                    {new Date(log.timestamp).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })}
+                  </span>
+
+                  {/* Log Message */}
+                  <span
+                    className={`flex-1 font-medium ${
+                      log.type.includes("No Face")
+                        ? "text-red-600"
+                        : log.type.includes("Multiple")
+                        ? "text-yellow-600"
+                        : log.type.includes("Suspicious")
+                        ? "text-orange-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {log.type}
+                  </span>
+                </li>
+              ))
           ) : (
-            <li className="text-gray-400 italic text-center">
-              No logs yet
-            </li>
+            <li className="text-gray-400 italic text-center">No logs yet</li>
           )}
         </ul>
       </div>
