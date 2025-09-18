@@ -22,7 +22,14 @@ export const App = () => {
         />
         <Route path="/logIn" element={<LogIn />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/interview" element={<Interview />} />
+        <Route
+          path="/interview"
+          element={
+            <ProtectRoutes>
+              <Interview />
+            </ProtectRoutes>
+          }
+        />
       </Routes>
     </div>
   );
