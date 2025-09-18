@@ -5,6 +5,7 @@ import { LogIn } from "./pages/LogIn";
 import { Register } from "./pages/Register";
 import { Home } from "./pages/Home";
 import { ProtectRoutes } from "../components/ProtectRoutes";
+import { Interview } from "./pages/Interview";
 
 export const App = () => {
   return (
@@ -21,6 +22,7 @@ export const App = () => {
         />
         <Route path="/logIn" element={<LogIn />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/interview" element={<Interview />} />
       </Routes>
     </div>
   );
