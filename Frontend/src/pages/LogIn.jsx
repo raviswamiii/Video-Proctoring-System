@@ -67,7 +67,7 @@ export const LogIn = () => {
 
       <Link to={"/register"}>
         <p className="text-sm mt-2 text-gray-600">
-          <span className="text-indigo-600">Sign Up</span> if you already have
+          <span className="text-indigo-600 underline">Sign Up</span> if you do not have
           an account.
         </p>
       </Link>
