@@ -17,13 +17,13 @@ export const LogIn = () => {
       const userData = { email, password };
 
       const response = await axios.post(
-        backendURL + "/user/register",
+        backendURL + "/user/logIn",
         userData,
         { withCredentials: true }
       );
 
       if (response.data.success) {
-        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("token", response.data.token);
         navigate("/home");
       } else {
         setError(response.data.message);
@@ -61,7 +61,7 @@ export const LogIn = () => {
             Sign In
           </button>
 
-          <p className="text-red-500">{error}</p>
+          <p className="text-red-500 text-sm">{error}</p>
         </form>
       </div>
 

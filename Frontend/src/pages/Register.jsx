@@ -24,7 +24,7 @@ export const Register = () => {
       );
 
       if (response.data.success) {
-        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("token", response.data.token);
         navigate("/home");
       } else {
         setError(response.data.message);
@@ -69,7 +69,7 @@ export const Register = () => {
             Sign Up
           </button>
 
-          <p className="text-red-500">{error}</p>
+          <p className="text-red-500 text-sm">{error}</p>
         </form>
       </div>
 
