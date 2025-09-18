@@ -4,10 +4,10 @@ import { LogOut } from "../components/LogOut";
 
 export const Home = () => {
   return (
-    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200">
+    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200 p-5">
         <LogOut/>
-      <div className="p-10 rounded-2xl shadow-lg text-center">
-        <h1 className="text-3xl font-bold mb-6">Join as</h1>
+      <div className="p-8 sm:p-10 rounded-2xl shadow-lg text-center">
+        <h1 className="text-3xl font-bold mb-3">Join as</h1>
         <div className="flex gap-5">
           <Link
             to={"/interview"}

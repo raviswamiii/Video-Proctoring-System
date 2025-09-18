@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 export const Start = () => {
   return (
-    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200">
-      <div className="bg-white rounded-2xl shadow-lg max-w-md p-10 text-center">
+    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200 p-5">
+      <div className="bg-white rounded-2xl shadow-lg p-8 sm:p-10 text-center sm:w-90 md:w-100">
         <h1 className="text-3xl text-gray-800 font-bold mb-6">
           🎥 Video Proctoring System
         </h1>

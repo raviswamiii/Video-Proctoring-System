@@ -34,8 +34,8 @@ export const Register = () => {
     }
   };
   return (
-    <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200">
-      <div className="bg-white rounded-2xl shadow-lg w-[30%] p-10 text-center">
+    <div className="flex flex-col justify-center items-center h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200 p-5">
+      <div className="bg-white rounded-2xl shadow-lg p-8 sm:p-10 text-center sm:w-100">
         <h1 className="text-3xl text-gray-800 font-bold mb-3">Sign Up</h1>
         <form
           action=""
