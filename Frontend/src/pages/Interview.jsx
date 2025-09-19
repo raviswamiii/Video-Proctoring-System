@@ -1,7 +1,12 @@
 import React from 'react'
+import { VideoFeed } from '../components/VideoFeed'
+import { LogsPanel } from '../components/LogsPanel'
 
 export const Interview = () => {
   return (
-    <div>Interview</div>
+    <div className='flex'> 
+      <VideoFeed/>
+      <LogsPanel/>
+    </div>
   )
 }
