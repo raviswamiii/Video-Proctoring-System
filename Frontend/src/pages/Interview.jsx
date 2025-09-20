@@ -4,7 +4,7 @@ import { LogsPanel } from '../components/LogsPanel'
 
 export const Interview = () => {
   return (
-    <div className='flex'> 
+    <div className='sm:flex'> 
       <VideoFeed/>
       <LogsPanel/>
     </div>
