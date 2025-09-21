@@ -4,8 +4,8 @@ import { Start } from "./pages/Start";
 import { LogIn } from "./pages/LogIn";
 import { Register } from "./pages/Register";
 import { Home } from "./pages/Home";
-import { ProtectRoutes } from "../components/ProtectRoutes";
 import { Interview } from "./pages/Interview";
+import { ProtectRoutes } from "./components/ProtectRoutes";
 
 export const App = () => {
   return (
