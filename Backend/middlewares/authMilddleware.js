@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import blacklistTokenModel from "../models/blacklistToken";
+import blacklistTokenModel from "../models/blacklistToken.js";
 import authModel from "../models/authModel.js";
 
 const authMiddleware = async (req, res, next) => {
@@ -32,3 +32,5 @@ const authMiddleware = async (req, res, next) => {
     return res.status(500).json({ success: false, message: "Server error." });
   }
 };
+
+export default authMiddleware;
