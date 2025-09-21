@@ -8,11 +8,15 @@ export const LogOut = () => {
 
   const onLogoutHandler = async () => {
     try {
-      const response = await axios.post(backendURL + "/user/logout", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axios.post(
+        backendURL + "/user/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (response.data.success) {
         localStorage.removeItem("token");
@@ -21,7 +25,7 @@ export const LogOut = () => {
         console.error(response.data.message);
       }
     } catch (error) {
-      console.error("Logout error:", error.message);
+      console.error("Logout error:", error);
     }
   };
   return (

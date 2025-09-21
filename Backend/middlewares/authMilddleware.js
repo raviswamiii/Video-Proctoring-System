@@ -9,7 +9,7 @@ const authMiddleware = async (req, res, next) => {
     if (!token)
       return res
         .status(401)
-        .json({ success: false, message: "Token not found." });
+        .json({ success: false, message: "Middleware didn't found token." });
 
     const blacklistedToken = await blacklistTokenModel.findOne({ token });
     if (blacklistedToken)

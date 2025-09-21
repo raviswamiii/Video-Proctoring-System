@@ -102,13 +102,15 @@ const userLogout = async (req, res) => {
         .json({ success: false, message: "Token not found." });
 
     res.clearCookie("token");
-    await blacklistTokenModel.create(token);
+    await blacklistTokenModel.create({ token });
     return res
       .status(201)
-      .status({ success: true, message: "You've been logged out." });
+      .json({ success: true, message: "You've been logged out." });
   } catch (error) {
     console.log("Logout error", error.message);
-    return res.status(500).json({ success: false, message: "Error during logout." });
+    return res
+      .status(500)
+      .json({ success: false, message: "Error during logout." });
   }
 };
 export default { userRegister, userLogIn, userLogout };
