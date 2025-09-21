@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import authModel from "../models/authModel.js";
+import blacklistTokenModel from "../models/blacklistToken.js";
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -91,4 +92,18 @@ const userLogIn = async (req, res) => {
   }
 };
 
-export default { userRegister, userLogIn };
+const userLogout = async (req, res) => {
+  try {
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+    res.status(401).json({ success: false, message: "Token not found." });
+    res.clearCookie("token");
+    await blacklistTokenModel.create(token);
+    res
+      .status(201)
+      .status({ success: true, message: "You've been logged out." });
+  } catch (error) {
+    console.log("Logout error", error.message);
+    res.status(500).json({ success: false, message: "Error during logout." });
+  }
+};
+export default { userRegister, userLogIn, userLogout };
