@@ -1,11 +1,28 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const LogOut = () => {
   const navigate = useNavigate();
-  const onLogoutHandler = () => {
-    localStorage.removeItem("token");
-    navigate("/logIn");
+  const backendURL = import.meta.env.VITE_BACKEND_URL;
+
+  const onLogoutHandler = async () => {
+    try {
+      const response = await axios.post(backendURL + "/user/logout", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (response.data.success) {
+        localStorage.removeItem("token");
+        navigate("/logIn");
+      } else {
+        console.error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Logout error:", error.message);
+    }
   };
   return (
     <div
