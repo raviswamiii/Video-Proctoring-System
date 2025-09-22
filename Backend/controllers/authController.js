@@ -113,4 +113,21 @@ const userLogout = async (req, res) => {
       .json({ success: false, message: "Error during logout." });
   }
 };
-export default { userRegister, userLogIn, userLogout };
+
+const getCurrentUser = async (req, res) => {
+  try {
+    res.json({
+      name: req.user.name,
+    });
+  } catch (error) {
+    console.log("Error during getting current user", error.message);
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: "Server error during getting current user.",
+      });
+  }
+};
+
+export default { userRegister, userLogIn, userLogout, getCurrentUser };
