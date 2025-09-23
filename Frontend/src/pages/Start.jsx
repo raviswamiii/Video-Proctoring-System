@@ -1,7 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Start = () => {
+  const navigate = useNavigate();
+
+  const redirectToHome = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      return navigate("/home");
+    } else {
+      return navigate("/logIn");
+    }
+  };
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200 p-5">
       <div className="bg-white rounded-2xl shadow-lg p-8 sm:p-10 text-center sm:w-90 md:w-100">
@@ -12,11 +22,12 @@ export const Start = () => {
           Ensure integrity during interviews with live monitoring, face
           detection, and suspicious activity tracking.
         </p>
-        <Link to={"/logIn"}>
-          <button className="px-6 py-3 rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">
-            🚀 Start Interview
-          </button>
-        </Link>
+        <button
+          onClick={redirectToHome}
+          className="px-6 py-3 rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer"
+        >
+          🚀 Start Interview
+        </button>
       </div>
     </div>
   );
