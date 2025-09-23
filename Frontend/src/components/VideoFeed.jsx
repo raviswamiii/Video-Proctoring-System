@@ -59,9 +59,10 @@ export const VideoFeed = ({ addLogs }) => {
         drawRect(predictions, ctx, canvasRef.current.width);
 
         if(predictions.length > 0){
-          addLogs(`Detected: ${predictions.map((object) => (
+          const logMessage = `Detected: ${predictions.map((object) => (
             `${object.class} (${Math.round(object.score*100)}%)`
-          ))}`)
+          ))}`
+          addLogs(logMessage);
         }
       }
     };
@@ -90,7 +91,7 @@ export const VideoFeed = ({ addLogs }) => {
         )}
         <canvas ref={canvasRef} className="absolute h-full w-full" />
         <p className="text-sm text-gray-800 font-semibold absolute bottom-3 left-3 bg-gray-400 rounded-sm px-2">
-          {user ? user.name : "You"}
+          {user?.name}
         </p>
       </div>
       <div className="flex gap-3">

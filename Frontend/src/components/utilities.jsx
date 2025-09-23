@@ -2,11 +2,12 @@ export const drawRect = (detections, ctx, canvasWidth) => {
   detections.forEach(prediction => {
     const [x, y, width, height] = prediction.bbox;
     const text = prediction.class;
+    const confidence = (prediction.score * 100).toFixed(2); // e.g. 92.45%
 
     // Flip x-coordinate for mirrored video
     const flippedX = canvasWidth - x - width;
 
-    // Random color
+    // Color
     const color = "aqua";
     ctx.strokeStyle = color;
     ctx.fillStyle = color;
@@ -18,7 +19,7 @@ export const drawRect = (detections, ctx, canvasWidth) => {
     ctx.rect(flippedX, y, width, height);
     ctx.stroke();
 
-    // Draw text readable
-    ctx.fillText(text, flippedX, y > 10 ? y - 5 : y + 15);
+    // Draw text with confidence
+    ctx.fillText(`${text} (${confidence}%)`, flippedX, y > 10 ? y - 5 : y + 15);
   });
 };

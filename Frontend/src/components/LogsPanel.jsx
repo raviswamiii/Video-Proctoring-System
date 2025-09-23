@@ -12,7 +12,7 @@ export const LogsPanel = ({ logs }) => {
         {logs.length === 0 ? (
           <p className="italic text-sm text-gray-500">No logs yet</p>
         ) : (
-          logs.reverse().map((log, index) => (
+          [...logs].reverse().map((log, index) => (
             <p
               key={index}
               className="text-sm text-white bg-green-800 border-b border-gray-100 py-2 px-4 rounded-lg mb-2"
