@@ -1,39 +1,103 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import Webcam from "react-webcam";
+import * as cocossd from "@tensorflow-models/coco-ssd";
+import * as tf from "@tensorflow/tfjs";
+import { drawRect } from "./utilities";
 
 export const VideoFeed = () => {
   const [user, setUser] = useState(null);
+  const [start, setStart] = useState(false);
   const backendURL = import.meta.env.VITE_BACKEND_URL;
+  const webcamRef = useRef(null);
+  const canvasRef = useRef(null);
+  const intervalRef = useRef(null);
+  const netRef = useRef(null);
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchUser = async () => {
-    try {
-      const response = await axios.get(backendURL + "/user/userDetails", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        withCredentials: true
-      });
+      try {
+        const response = await axios.get(backendURL + "/user/userDetails", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          withCredentials: true,
+        });
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user:", error.message);
+      }
+    };
+    fetchUser();
+  }, []);
 
-      setUser(response.data)
-    } catch (error) {
-      console.error("Error during fetching user:", error.message);
+  useEffect(() => {
+    const initTensor = async () => {
+      await tf.setBackend("webgl");
+      await tf.ready();
+      netRef.current = await cocossd.load();
+      console.log("Coco-SSD loaded");
+    };
+    initTensor();
+  }, []);
+
+  useEffect(() => {
+    const detect = async () => {
+      if (webcamRef.current?.video?.readyState === 4 && netRef.current) {
+        const video = webcamRef.current.video;
+        const videoWidth = video.videoWidth;
+        const videoHeight = video.videoHeight;
+
+        video.width = videoWidth;
+        video.height = videoHeight;
+
+        canvasRef.current.width = videoWidth;
+        canvasRef.current.height = videoHeight;
+
+        const predictions = await netRef.current.detect(video);
+        const ctx = canvasRef.current.getContext("2d");
+        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        drawRect(predictions, ctx, canvasRef.current.width);
+      }
+    };
+
+    if (start) {
+      intervalRef.current = setInterval(detect, 100);
+    } else {
+      clearInterval(intervalRef.current);
+      const ctx = canvasRef.current.getContext("2d");
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
-  };
-  fetchUser();
-  },[])
+
+    return () => clearInterval(intervalRef.current);
+  }, [start]);
+
   return (
     <div className="h-[60vh] w-full sm:h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200 flex flex-col justify-center items-center gap-2 sm:gap-3">
       <div className="bg-black h-[75%] w-[90%] sm:h-[70%] sm:w-[70%] rounded-xl relative">
+        {start && (
+          <Webcam
+            ref={webcamRef}
+            className="absolute h-full w-full"
+            style={{ transform: "scaleX(-1)" }}
+          />
+        )}
+        <canvas ref={canvasRef} className="absolute h-full w-full" />
         <p className="text-sm text-gray-800 font-semibold absolute bottom-3 left-3 bg-gray-400 rounded-sm px-2">
           {user ? user.name : "You"}
         </p>
       </div>
       <div className="flex gap-3">
-        <button className="bg-green-500 hover:bg-green-600 cursor-pointer text-white px-5 py-2 sm:px-10 sm:py-3 sm:text-xl font-semibold rounded-xl">
+        <button
+          onClick={() => setStart(true)}
+          className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 sm:px-10 sm:py-3 rounded-xl"
+        >
           Start
         </button>
-        <button className="bg-red-500 hover:bg-red-600 cursor-pointer text-white px-5 py-2 sm:px-10 sm:py-3 sm:text-xl font-semibold rounded-xl">
+        <button
+          onClick={() => setStart(false)}
+          className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 sm:px-10 sm:py-3 rounded-xl"
+        >
           Stop
         </button>
       </div>
