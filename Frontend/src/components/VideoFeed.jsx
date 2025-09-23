@@ -5,7 +5,7 @@ import * as cocossd from "@tensorflow-models/coco-ssd";
 import * as tf from "@tensorflow/tfjs";
 import { drawRect } from "./utilities";
 
-export const VideoFeed = () => {
+export const VideoFeed = ({ addLogs }) => {
   const [user, setUser] = useState(null);
   const [start, setStart] = useState(false);
   const backendURL = import.meta.env.VITE_BACKEND_URL;
@@ -36,7 +36,6 @@ export const VideoFeed = () => {
       await tf.setBackend("webgl");
       await tf.ready();
       netRef.current = await cocossd.load();
-      console.log("Coco-SSD loaded");
     };
     initTensor();
   }, []);
@@ -58,6 +57,12 @@ export const VideoFeed = () => {
         const ctx = canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         drawRect(predictions, ctx, canvasRef.current.width);
+
+        if(predictions.length > 0){
+          addLogs(`Detected: ${predictions.map((object) => (
+            `${object.class} (${Math.round(object.score*100)}%)`
+          ))}`)
+        }
       }
     };
 
@@ -74,7 +79,8 @@ export const VideoFeed = () => {
 
   return (
     <div className="h-[60vh] w-full sm:h-screen bg-gradient-to-br from-indigo-100 via-white to-indigo-200 flex flex-col justify-center items-center gap-2 sm:gap-3">
-      <div className="bg-black h-[75%] w-[90%] sm:h-[70%] sm:w-[70%] rounded-xl relative">
+      <div className="bg-black h-[75%] w-[90%] sm:h-[70%] sm:w-[70%] rounded-xl relative flex justify-center items-center">
+        <p className="text-white">Click start to proceed...</p>
         {start && (
           <Webcam
             ref={webcamRef}
