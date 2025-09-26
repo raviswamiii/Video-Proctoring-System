@@ -5,7 +5,7 @@ import authModel from "../models/authModel.js";
 import blacklistTokenModel from "../models/blacklistToken.js";
 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 const userRegister = async (req, res) => {
